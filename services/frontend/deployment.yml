@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: frontend
+  namespace: frontend
+spec:
+  replicas: 2
+  strategy:
+    canary:
+      steps:
+      - setWeight: 10
+      - pause: {duration: 60}
+      - setWeight: 50
+      - pause: {duration: 120}
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: 123456789012.dkr.ecr.ap-south-1.amazonaws.com/gitops-app:IMAGE_TAG_PLACEHOLDER
+        ports:
+        - containerPort: 80
